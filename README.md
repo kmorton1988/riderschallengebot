@@ -32,4 +32,4 @@ As of now, at least unofficially, I am taking over development of the bot, and w
 
 ## License
 
-The project is to be licensed under the MIT License, detailed further in the LICENSE.md file in the root of this repository.
+The project is licensed under the MIT License, detailed further in the LICENSE.md file in the root of this repository.
