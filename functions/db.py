@@ -26,7 +26,11 @@ def get_flair(file,user):
     con = create_connection(file)
     cur = con.cursor()
     for row in cur.execute("""select flair from users where user = ?""",(user,)):
-        return(row[0])
+        if row[0] == None:
+            return ''
+        else:
+            return row[0]
+
 
 # Function for adding a point for a completed post
 def add_point(file,user):
