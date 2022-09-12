@@ -1,4 +1,5 @@
 import sqlite3
+from sqlite3 import Error
 
 # Creates database connection, creates 'users' table if there is no existing 'users' table
 def create_connection(db_file):
