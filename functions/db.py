@@ -10,17 +10,17 @@ except Error as e:
     print(e)
 if con:
     cur = con.cursor()
-    print('ensure USERS table exists')
+    print('ensure USERS table exists',flush=True)
     cur.execute("CREATE TABLE IF NOT EXISTS users (user STRING PRIMARY KEY UNIQUE, points INTEGER UNIQUE, flair STRING);")
     con.commit()
 
 def get_points(user):
-    # Get's current Points by Connecting to the file and executing a command to return current value in "points". returns "None" even if you attempt to convert "None" to 0 explicitly. 
-        if user_check(user):
-            print('Returning current points value')
-            p = cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()
-            return int(p[0])
-            
+# Get's current Points by Connecting to the file and executing a command to return current value in "points". returns "None" even if you attempt to convert "None" to 0 explicitly. 
+    if user_check(user):
+        print('Returning current points value')
+        p = cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()
+        return int(p[0])
+        
 def get_flair(user):
     # get's current flair and passes the value forward. mod_flair() has logic to handle None value. (there is no other reason to have this method called from anywhere else)
     if user_check(user):
@@ -42,10 +42,10 @@ def add_point(user):
 
 def user_check(user):
     if cur.execute("select 1 from users where user = ?;", (user, )).fetchone():
-        print('User Exists: ' + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall()) )
+        print('User Exists: ' + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall()))
         return True
     else:
-        print( 'User did not exist. Creating now...')
+        print('User did not exist. Creating now...')
         cur.execute("""INSERT INTO users VALUES (?,?,?);""",(user,int(0),"Riders Challenge Participant",))
-        print( "User Created: " + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall())) 
+        print("User Created: " + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall())) 
         return True
