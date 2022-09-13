@@ -1,11 +1,10 @@
-import functions.reddit as reddit
 import praw
 import functions.db as db
 
 KEYWORDS = ["complete"]
 
 #Establish a Reddit Session
-con = praw.Reddit()
+r = praw.Reddit()
 
 def process_post(post):
     user = post.author
@@ -26,24 +25,21 @@ def generate_flair_text(user, existing_flair):
     else:
         return str(points)
 
-
+def process_post(post):
+    user = post.author.name
+    db.add_point(user)
+    flair_update = str(db.get_points(user)) + ' | ' + db.get_flair(user)
+    print(flair_update)
+    return flair_update
 
 # Listening for Complete keyword in titles to reply to. 
-for post in reddit.subreddit("riderschallengetest").stream.submissions():
+for post in r.subreddit("riderschallengetest").stream.submissions():
     if post.saved:
         continue
     has_keyword = any(k.lower() in post.title.lower() for k in KEYWORDS)
-    not_self = post.author != con.user.me()
+    not_self = post.author.name != r.user.me()
     if has_keyword and not_self:
         post.save()
-        to_post = reddit.process_post(post)
-        con.subreddit("riderschallengetest").flair.set(post.author, text=to_post)
-
-
-    
-
-
-### Test Calls below to test the database functions in varying states
-#db.mod_flair(dbfile,'kmisterk',f"""{flair_entry1}""")
-#db.add_point(dbfile,"ninja-racer")
-#db.mod_flair(dbfile,"rocketricer334",flair_entry3)
+        to_post = process_post(post)
+        print(to_post)
+        r.subreddit("riderschallengetest").flair.set(post.author.name, text=to_post)
