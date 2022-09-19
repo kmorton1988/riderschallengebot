@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 # Creates database connection, creates 'users' table if there is no existing 'users' table
-db_file = "RCMaster.db"
+db_file = "RCMaster.sql"
 con = None
 try:
     con = sqlite3.connect(db_file)
@@ -11,7 +11,7 @@ except Error as e:
 if con:
     cur = con.cursor()
     print('ensure USERS table exists',flush=True)
-    cur.execute("CREATE TABLE IF NOT EXISTS users (user STRING PRIMARY KEY UNIQUE, points INTEGER UNIQUE, flair STRING);")
+    cur.execute("CREATE TABLE IF NOT EXISTS users (user STRING PRIMARY KEY UNIQUE, points INTEGER, flair STRING);")
     con.commit()
 
 def get_points(user):

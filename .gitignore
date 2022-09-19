@@ -1,5 +1,5 @@
 praw.ini
-RCMaster.db
+RCMaster.sql
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
