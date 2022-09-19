@@ -6,7 +6,7 @@ import prawcore.exceptions as pc
 
 #Establish a Reddit Session
 reddit = praw.Reddit()
-sub = reddit.subreddit("riderschallengetest")
+sub = reddit.subreddit("riderschallenge")
 
 def process_post(post):
     user = post.author.name
