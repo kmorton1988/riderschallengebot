@@ -28,7 +28,7 @@ def get_sticky_id():
         return False
 
 # Listening for Complete keyword in titles to reply to. 
-for post in reddit.subreddit("riderschallengetest").stream.submissions():
+for post in reddit.subreddit("riderschallengetest").stream.submissions(skip_existing=True):
     
     if post.saved:
         continue
