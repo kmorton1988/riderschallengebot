@@ -136,3 +136,5 @@ dmypy.json
 
 __pycache__
 __pypackages__
+
+*.sql
