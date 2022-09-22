@@ -28,15 +28,13 @@ def get_sticky_id():
         return False
 
 # Listening for Complete keyword in titles to reply to. 
-for post in reddit.subreddit("riderschallengetest").stream.submissions(skip_existing=True):
+for post in sub.stream.submissions(skip_existing=True):
     
     if post.saved:
         continue
-    
-
 
     has_keyword = any(k.lower() in post.title.lower() for k in ["complete"])
-    not_self = post.author.name != reddit.user.me.name()
+    not_self = post.author.name != reddit.user.me().name
     if has_keyword and not_self:
         post.save()
         sticky_id = get_sticky_id()
@@ -45,16 +43,16 @@ for post in reddit.subreddit("riderschallengetest").stream.submissions(skip_exis
             sticky = reddit.submission(sticky_id)
             print(type(sticky))
             print(sticky)
-            sticky.mod.flair(text="",)    
-        except pc.Forbidden as f:
+            sticky.flair.set("6e869780-2a0b-11e4-bfd1-12313b0eb184")    #Flair ID for "complete" flair on the subreddit
+        except ValueError as f:
             print(f)
             continue
             
         to_post = process_post(post)
         print(to_post)
-        reddit.subreddit("riderschallengetest").flair.set(post.author.name, text=to_post)
+        sub.flair.set(post.author.name, text=to_post)
         post.mod.sticky()
-        post.mod.flair(text="Current Challenge",)
+        post.flair.select('55e0642e-49df-11e4-ba33-12313b0e9e2c')       # Flair ID for "Current Challenge" flair on the subreddit
 
 ###################################################################
 ############ Implementation of multi-stream listening: ############
