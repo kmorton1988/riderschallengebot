@@ -33,7 +33,7 @@ def get_flair(user):
 def add_point(user):
     if user_check(user):       
         try:
-            cur.execute("UPDATE users SET points = ? WHERE user = ?;", (get_points(user) + 1, user,))
+            cur.execute("""UPDATE users SET points = ? WHERE user = ?;""", (get_points(user) + 1, user,))
             con.commit()
             print('point added. Current points: ' + str(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()))
         except Error as e:
