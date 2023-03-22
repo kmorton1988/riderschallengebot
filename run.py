@@ -5,7 +5,7 @@ import markdown_strings as markdown
 
 #Establish a Reddit Session
 reddit = praw.Reddit()
-sub = reddit.subreddit("riderschallengetest")
+sub = reddit.subreddit("riderschallenge")
 
 
 
@@ -18,7 +18,6 @@ def process_post(post):
     reply_body += markdown.table_row(["Username","Points","Current Flair"]) + "\r\n"
     reply_body += markdown.table_delimiter_row(3) +"\r\n"
     standings = db.standings(user)
-    print(standings)
     length = len(standings)
     for s in range(length):
         reply_body += markdown.table_row(standings[s]) + "\r\n"

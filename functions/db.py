@@ -52,7 +52,5 @@ def user_check(user):
 
 def standings(user):
     p = int(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()[0])
-    print(p)
     standings = cur.execute("""select * from users order by points desc;""").fetchall()
-    print(standings)
     return standings
