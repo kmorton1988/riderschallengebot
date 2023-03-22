@@ -49,3 +49,10 @@ def user_check(user):
         cur.execute("""INSERT INTO users VALUES (?,?,?);""",(user,int(0),"Riders Challenge Participant",))
         print("User Created: " + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall())) 
         return True
+
+def standings(user):
+    p = int(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()[0])
+    print(p)
+    standings = cur.execute("""select * from users order by points desc;""").fetchall()
+    print(standings)
+    return standings
