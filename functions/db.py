@@ -15,42 +15,63 @@ if con:
     con.commit()
 
 def get_points(user):
-# Get's current Points by Connecting to the file and executing a command to return current value in "points". returns "None" even if you attempt to convert "None" to 0 explicitly. 
-    if user_check(user):
-        print('Returning current points value')
-        p = cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()
-        return int(p[0])
-        
+    try:
+        if user_exists(user):
+            print('Returning current points value')
+            p = cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()
+            return int(p[0])
+    except Error as e:
+        print(f"Error getting points for user {user}: {e}")
+        return None
+
 def get_flair(user):
-    # get's current flair and passes the value forward. mod_flair() has logic to handle None value. (there is no other reason to have this method called from anywhere else)
-    if user_check(user):
-        for row in cur.execute("""select flair from users where user = ?;""",(user,)):
-            if row[0] == None:
-                return "Riders Challenge Participant"
-            else:
-                return row[0]
+    try:
+        if user_exists(user):
+            for row in cur.execute("""select flair from users where user = ?;""",(user,)):
+                if row[0] == None:
+                    return "Riders Challenge Participant"
+                else:
+                    return row[0]
+    except Error as e:
+        print(f"Error getting flair for user {user}: {e}")
+        return None
 
 def add_point(user):
-    if user_check(user):       
-        try:
-            cur.execute("""UPDATE users SET points = ? WHERE user = ?;""", (get_points(user) + 1, user,))
-            con.commit()
-            print('point added. Current points: ' + str(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()))
-        except Error as e:
-            print("""Something didn't work when adding a point for ?. Returning the Error message: ?""",(user,e,))
-            return(e)
+    try:
+        if not user_exists(user):
+            add_user(user)
+        cur.execute("""UPDATE users SET points = points + 1 WHERE user = ?;""", (user,))
+        con.commit()
+        print('point added. Current points: ' + str(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()))
+    except Error as e:
+        print(f"Error adding a point for user {user}: {e}")
+        return(e)
 
-def user_check(user):
-    if cur.execute("select 1 from users where user = ?;", (user, )).fetchone():
-        print('User Exists: ' + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall()))
-        return True
-    else:
-        print('User did not exist. Creating now...')
+def user_exists(user):
+    try:
+        if cur.execute("select 1 from users where user = ?;", (user, )).fetchone():
+            print('User Exists: ' + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall()))
+            return True
+        else:
+            print('User does not exist.')
+            return False
+    except Error as e:
+        print(f"Error checking if user {user} exists: {e}")
+        return False
+
+def add_user(user):
+    try:
+        print('Creating user now...')
         cur.execute("""INSERT INTO users VALUES (?,?,?);""",(user,int(0),"Riders Challenge Participant",))
         print("User Created: " + str(cur.execute("""SELECT * FROM users WHERE user = ?;""",(user,)).fetchall())) 
-        return True
+    except Error as e:
+        print(f"Error adding user {user}: {e}")
 
 def standings(user):
-    p = int(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()[0])
-    standings = cur.execute("""select * from users order by points desc;""").fetchall()
-    return standings
+    try:
+        p = int(cur.execute("""SELECT points FROM users WHERE user = ?;""",(user,)).fetchone()[0])
+        standings = cur.execute("""select * from users order by points desc;""").fetchall()
+        return standings
+    except Error as e:
+        print(f"Error getting standings for user {user}: {e}")
+        return None
